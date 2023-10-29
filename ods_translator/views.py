@@ -11,7 +11,7 @@ import numpy as np
 import os
 import joblib
 
-model = joblib.load(os.path.join(settings.BASE_DIR,"pipes/modeloP1E2Regresion.pkl"))
+#model = joblib.load(os.path.join(settings.BASE_DIR,"pipes/modeloP1E2Regresion.pkl"))
 
 
 def clasificacion(request):

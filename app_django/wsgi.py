@@ -11,8 +11,12 @@ import os
 from ods_translator.load_joblib import df_preprocess, tokenize_df
 
 from django.core.wsgi import get_wsgi_application
+import joblib
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app_django.settings')
+
+global model 
+model = joblib.load("pipes/modeloP1E2Regresion.pkl")
 
 
 
