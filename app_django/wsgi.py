@@ -15,9 +15,5 @@ import joblib
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app_django.settings')
 
-global model 
-model = joblib.load("pipes/modeloP1E2Regresion.pkl")
-
-
 
 application = get_wsgi_application()

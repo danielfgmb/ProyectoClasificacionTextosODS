@@ -9,9 +9,10 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import numpy as np
 import os
+from ods_translator.load_joblib import df_preprocess, tokenize_df
 import joblib
 
-#model = joblib.load(os.path.join(settings.BASE_DIR,"pipes/modeloP1E2Regresion.pkl"))
+model = joblib.load(os.path.join(settings.BASE_DIR,"pipes/modeloP1E2Regresion.pkl"))
 
 
 def clasificacion(request):
