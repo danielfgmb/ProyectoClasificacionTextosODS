@@ -38,6 +38,18 @@ python manage.py runserver
 ```
 Por defecto el servidor corre en el puerto 8000. Si está corriendo en localhost verifique en la siguiente dirección http://localhost:8000/
 
+## API Endpoints
 
+Se implementó un API para obtener la clasificación de archivos. Es tipo GET, recibe en el body del request una lista JSON con los textos. Retorna una lista de diccionarios, cada diccionario trae el texto original en la llave "text" y el número del objetivo desarrollo sostenible con la llave "ods".
 
+URL:
 
+```
+http://localhost:8000/api/getClasificacion
+```
+
+Objeto JSON ENTRADA
+
+```JSON
+["texto a clasificar 1", "texto a clasificar 2",...,"texto a clasificar n"]
+```
