@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Floating Multiline Textfield -->
+<div class="mdl-cell mdl-cell--12-col" style="margin-bottom: 20px;">
+<h3  style="margin-top: 0;">Clasificación de ODS<br></h3>
+    <form action="javascript:void(0);" class="mdl-cell mdl-cell--12-col">
+        <p>Coloque cada texto a clasificar en cada linea</p>
+        <div class="mdl-textfield mdl-js-textfield" style="width:100%">
+            
+        <textarea class="mdl-textfield__input" type="text" rows= "3" id="texts_area" ></textarea>
+        <label class="mdl-textfield__label" for="texts_area">Textos a clasificar...</label>
+        </div>
+        <button onclick="traducir()" class=" mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+            Traducir a ODS
+        </button>
+    </form>
+</div>
+<div id="table" class="mdl-cell mdl-cell--7-col"></div>
+<div class="mdl-cell mdl-cell--5-col">
+    <div id="graph" style="width: 100% !important;"></div>
+</div>
+
+<div style="flex: 1"></div>
+ 
+<script>
+    function traducir(){
+        $.ajax({
+            url: "ajax/clasificacion",  // URL mapped to the Django view
+            type: "POST",
+            success: function(response) {
+                console.log(response)
+                var table = new Tabulator("#table", {
+                    layout:"fitColumns",      //fit columns to width of table
+                    responsiveLayout:"hide",  //hide columns that don't fit on the table
+                    addRowPos:"top",          //when adding a new row, add it to the top of the table
+                    history:true,             //allow undo and redo actions on the table
+                    pagination:"local",       //paginate the data
+                    paginationSize:12,         //allow 7 rows per page of data
+                    paginationCounter:"rows", //display count of paginated rows in footer
+                    movableColumns:true,      //allow column order to be changed
+                    initialSort:[             //set the initial sort order of the data
+                        {column:"name", dir:"asc"},
+                    ],
+                    columnDefaults:{
+                        tooltip:true,         //show tool tips on cells
+                    },
+                    data:response.results, //assign data to table
+                    autoColumns:true, //create columns from data field names
+                });
+
+                
+                var data = [{
+                    values: Object.values(response.pie),
+                    labels: Object.keys(response.pie),
+                    type: 'pie'
+                }];
+
+                var layout = {
+                    height: 400
+                };
+
+                Plotly.newPlot('graph', data, layout);
+
+            },
+            data: {
+                'texts': $("#texts_area").val()
+            },
+            beforeSend: function(){
+                console.log()
+                let cargando = '<div class="mdl-cell mdl-cell--12-col" style="display: flex; text-align: center; height: 100px; align-items: center;" ><div style="display: flex; align-items: center; flex: 1; flex-direction: column;"><div class="mdl-spinner mdl-js-spinner is-active" style=""></div></div></div>';
+                $("#primary_content").html(cargando);
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                
+            }
+            
+        });
+    }
+
+</script>
+
+{% endblock %}

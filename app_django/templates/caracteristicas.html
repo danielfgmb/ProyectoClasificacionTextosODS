@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Floating Multiline Textfield -->
+<div class="mdl-cell mdl-cell--12-col" style="margin-bottom: 20px;">
+<h3  style="margin-top: 0;">Análisis de Carácteristicas ODS<br></h3>
+    <form action="javascript:void(0);" class="mdl-cell mdl-cell--12-col">
+        <p>Coloque cada texto a clasificar en cada linea</p>
+        <div style="width: 100%" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="single_text">
+            <label class="mdl-textfield__label" for="single_text">Texto a Clasificar</label>
+        </div>
+        <button onclick="traducir()" class=" mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+            Traducir a ODS
+        </button>
+    </form>
+</div>
+<div id="texto_tokens" class="mdl-cell mdl-cell--12-col"></div>
+<div id="table" class="mdl-cell mdl-cell--7-col"></div>
+<div class="mdl-cell mdl-cell--5-col">
+    <div id="graph" style="width: 100% !important;"></div>
+</div>
+
+<div id="caracteristicas" class="mdl-cell mdl-cell--12-col"></div>
+
+<div style="flex: 1"></div>
+ 
+<script>
+    function traducir(){
+        $.ajax({
+            url: "ajax/caracteristicas",  // URL mapped to the Django view
+            type: "POST",
+            success: function(response) {
+                console.log(response)
+                var table = new Tabulator("#table", {
+                    layout:"fitColumns",      //fit columns to width of table
+                    responsiveLayout:"hide",  //hide columns that don't fit on the table
+                    addRowPos:"top",          //when adding a new row, add it to the top of the table
+                    history:true,             //allow undo and redo actions on the table
+                    pagination:"local",       //paginate the data
+                    paginationSize:12,         //allow 7 rows per page of data
+                    paginationCounter:"rows", //display count of paginated rows in footer
+                    movableColumns:true,      //allow column order to be changed
+                    initialSort:[             //set the initial sort order of the data
+                        {column:"name", dir:"asc"},
+                    ],
+                    columnDefaults:{
+                        tooltip:true,         //show tool tips on cells
+                    },
+                    data:response.imp, //assign data to table
+                    autoColumns:true, //create columns from data field names
+                });
+
+                $("#texto_tokens").html("<h5 style='margin-top: 0'>"+response.tokenizado+"</h5>")
+
+
+                var data = [{
+                    values: Object.values(response.proba),
+                    labels: Object.keys(response.proba),
+                    type: 'pie'
+                }];
+
+                var layout = {
+                    title: 'Probabilidad',
+                    height: 400
+                };
+
+                Plotly.newPlot('graph', data, layout);
+
+                console.log(Object.values(response.dict.ODS7))
+                
+                var trace1 = {
+                    x: Object.values(response.dict.Token),
+                    y: Object.values(response.dict.ODS6),
+                    type: 'bar',
+                    name: 'ODS6 - Agua y saneamiento'
+                    };
+
+                var trace2 = {
+                    x: Object.values(response.dict.Token),
+                    y: Object.values(response.dict.ODS7),
+                    type: 'bar',
+                    name: 'ODS7 - Energía asequible'
+                    };
+                
+                var trace3 = {
+                    x: Object.values(response.dict.Token),
+                    y: Object.values(response.dict.ODS16),
+                    type: 'bar',
+                    name: 'ODS16 - Paz y justicia'
+                    };
+
+                    var data2 = [trace1, trace2, trace3];
+
+                var layout2 = {
+                    height: 400,
+                    title: 'Características del Texto',
+                    xaxis: {
+                        tickangle: -45
+                    },
+                    barmode: 'group'
+                };
+
+                Plotly.newPlot('caracteristicas', data2, layout2);
+
+
+
+            },
+            data: {
+                'text': $("#single_text").val()
+            },
+            beforeSend: function(){
+                console.log()
+                let cargando = '<div class="mdl-cell mdl-cell--12-col" style="display: flex; text-align: center; height: 100px; align-items: center;" ><div style="display: flex; align-items: center; flex: 1; flex-direction: column;"><div class="mdl-spinner mdl-js-spinner is-active" style=""></div></div></div>';
+                $("#primary_content").html(cargando);
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                
+            }
+            
+        });
+    }
+
+</script>
+
+{% endblock %}

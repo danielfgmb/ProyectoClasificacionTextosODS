@@ -1,0 +1,38 @@
+
+{% extends "head.html" %}
+
+
+{% block body %}
+{% load static %}
+    <!-- Always shows a header, even in smaller screens. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header" style="background: #001d3dff;">
+            <div class="mdl-layout__header-row">
+            <!-- Title -->
+            <span class="mdl-layout-title">Proyecto BI - Etapa 2</span>
+            <!-- Add spacer, to align navigation to the right -->
+            <div class="mdl-layout-spacer"></div>
+            <!-- Navigation. We hide it in small screens. -->
+            <!--<img src="{% static 'img/logo.jpg' %}" style="height: 100%;">-->
+            <nav class="mdl-navigation mdl-layout--large-screen-only">
+            </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Menú</span>
+            <nav class="mdl-navigation">
+            <a class="mdl-navigation__link" href="">Clasificacion</a>
+            <a class="mdl-navigation__link" href="caracteristicas">Análisis de Características</a>
+            </nav>
+            <div class="mdl-layout-spacer"></div>
+           
+            <img src="{% static 'img/logo_white.svg' %}" style="width: 50%; margin-bottom: 20px; margin-left: 10px; margin-top: 10px;">
+        </div>
+        <main class="mdl-layout__content mdl-grid" style="width: 100% !important; box-sizing: border-box;">
+            <div class="mdl-cell--12-col mdl-cell page-content mdl-grid" style="position: relative; ">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+{% endblock %}
