@@ -30,7 +30,7 @@ venv\Scripts\activate
 Antes de iniciar la aplicación debe instalar todos los paquetes de Python requeridos. En la carpeta base se encuentra un archivo con todos los paquetes necesarios. Para instalarlos utilice el siguiente comando.
 
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 La aplicacion está diseñada en Django. Por lo que deberá estar en la carpeta base del repositorio y ejecutar el siguiente comando para correr el servidor.
 ```bash
